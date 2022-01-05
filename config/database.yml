@@ -1,0 +1,18 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  host: 127.0.0.1
+  username: postgres
+  password: 'postgres'
+  port: 5432
+  schema: public
+development:
+  <<: *default
+  database: agendor_api
+test:
+  <<: *default
+  database: agendor_api_test
+production:
+  <<: *default
+  database: agendor_api_production
