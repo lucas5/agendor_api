@@ -1,5 +1,7 @@
 class Room < ApplicationRecord
   belongs_to :office, class_name: 'Office'
+  has_many :agendas, class_name: 'Agenda'
+
   validate :capacity_verify
 
   def capacity_verify

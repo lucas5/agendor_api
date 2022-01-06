@@ -10,10 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_05_192443) do
+ActiveRecord::Schema.define(version: 2022_01_05_204215) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "agendas", force: :cascade do |t|
+    t.bigint "room_id"
+    t.bigint "office_id"
+    t.integer "start_time", null: false
+    t.integer "amount_of_hours", default: 1
+    t.date "reserve_date", null: false
+    t.string "reserve_name", null: false
+    t.string "token"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["office_id"], name: "index_agendas_on_office_id"
+    t.index ["room_id"], name: "index_agendas_on_room_id"
+  end
 
   create_table "offices", force: :cascade do |t|
     t.integer "capacity", default: 4
@@ -30,5 +44,7 @@ ActiveRecord::Schema.define(version: 2022_01_05_192443) do
     t.index ["office_id"], name: "index_rooms_on_office_id"
   end
 
+  add_foreign_key "agendas", "offices"
+  add_foreign_key "agendas", "rooms"
   add_foreign_key "rooms", "offices"
 end
