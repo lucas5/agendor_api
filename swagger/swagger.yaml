@@ -1,0 +1,175 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/agendas/available_times/{room_id}/{date}":
+    get:
+      summary: Visualizar hórarios disponíveis
+      tags:
+      - Agendas
+      parameters:
+      - name: room_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: date
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Horários agendados
+        '404':
+          description: Requisição inválida
+  "/api/agendas/show_agenda/{token}":
+    get:
+      summary: Visualizar uma agenda específica
+      tags:
+      - Agendas
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Horários agendados
+        '400':
+          description: Requisição inválida
+  "/api/agendas/agenda_list/{room_id}/{reserve_date}":
+    get:
+      summary: Visualizar horários agendados
+      tags:
+      - Agendas
+      parameters:
+      - name: room_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: reserve_date
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Horários agendados
+        '404':
+          description: Requisição inválida
+  "/api/agendas/":
+    post:
+      summary: Reservar horário
+      tags:
+      - Agendas
+      parameters: []
+      responses:
+        '200':
+          description: Reserva criada
+        '404':
+          description: Requisição inválida
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                room_id:
+                  type: integer
+                start_time:
+                  type: integer
+                amount_of_hours:
+                  type: integer
+                reserve_date:
+                  type: string
+                reserve_name:
+                  type: string
+              required:
+              - room_id
+              - start_time
+              - reserve_date
+              - reserve_name
+  "/api/agendas/update_agenda":
+    put:
+      summary: Atualizar informações do agendamento
+      tags:
+      - Agendas
+      parameters: []
+      responses:
+        '200':
+          description: Horários agendados
+        '404':
+          description: Requisição inválida
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: integer
+                room_id:
+                  type: integer
+                start_time:
+                  type: string
+                reserve_name:
+                  type: string
+              required:
+              - token
+              - room_id
+              - start_time
+              - reserve_name
+  "/api/agendas/delete_agenda":
+    delete:
+      summary: Cancelar agendamento
+      tags:
+      - Agendas
+      parameters: []
+      responses:
+        '200':
+          description: Horários agendados
+        '404':
+          description: Requisição inválida
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: integer
+              required:
+              - token
+  "/api/offices/{id}/rooms":
+    get:
+      summary: Visualizar todas as salas de um escritório
+      tags:
+      - Offices
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Horários agendados
+        '404':
+          description: Requisição inválida
+  "/api/offices/":
+    get:
+      summary: Listar todos os escritórios
+      tags:
+      - Offices
+      responses:
+        '200':
+          description: Horários agendados
+        '404':
+          description: Requisição inválida
+servers:
+- url: http://localhost:3000/

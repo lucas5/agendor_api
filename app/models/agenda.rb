@@ -6,9 +6,13 @@ class Agenda < ApplicationRecord
   after_save :reserve_amount_of_hours
 
   validate :valid_time
+  validate :not_weekend
   validate :valid_date_and_time
   validate :already_reserved
+  validates_presence_of :office
+  validates_presence_of :room
 
+  # Check if there is already a reservation in that time period
   def already_reserved
     return if id.present? && start_time_in_database == start_time && reserve_date_in_database == reserve_date
 
@@ -16,6 +20,7 @@ class Agenda < ApplicationRecord
     errors.add(:details, { message: 'Horário já reservado.' }) if agenda.present?
   end
 
+  # Returns an array of strings, informing the reservations that exist on the given date
   def self.agenda_list(room_id, reserve_date)
     agendas = Agenda.where(room_id: room_id, reserve_date: reserve_date).order(:start_time).pluck(:token).uniq
     list = []
@@ -28,6 +33,7 @@ class Agenda < ApplicationRecord
     list
   end
 
+  # Check if the reservation date and time has passed
   def valid_date_and_time
     if reserve_date < Date.current
       errors.add(:details, { message: 'A data de reserva já passou.' })
@@ -36,16 +42,19 @@ class Agenda < ApplicationRecord
     end
   end
 
+  # Check if the reservation time is between 9 am and 6 pm
   def valid_time
     if start_time < 9 || (start_time + amount_of_hours) > 18
       errors.add(:details, { message: 'O horário escolhido não está disponível para reserva.' })
     end
   end
 
+  # Check if the booking date is within business days
   def not_weekend
     errors.add(:details, { message: 'As reservas só podem ser feitas nos dias úteis.' }) if reserve_date.on_weekend?
   end
 
+  # If the user wants to book several times in a row, this function registers the schedule for the next hours
   def reserve_amount_of_hours
     Agenda.where(token: token).where.not(start_time: start_time).destroy_all if id.present? && amount_of_hours > 1
     1.upto(amount_of_hours - 1) do |hour|
@@ -56,12 +65,14 @@ class Agenda < ApplicationRecord
     end
   end
 
+  # Find a reservation by your token
   def self.find_reserves(token)
     Agenda.joins(room: [:office])
           .select("agendas.id, amount_of_hours, token, reserve_name, start_time, reserve_date, rooms.name as room_name, offices.name as office_name")
           .where(token: token).order(:start_time)
   end
 
+  # Returns an array of strings containing all free times for scheduling on the given date
   def self.available_times(date = Date.current, room)
     available_hours = []
     9.upto(17) do |hour|
@@ -77,6 +88,7 @@ class Agenda < ApplicationRecord
 
   protected
 
+  # Generates a 5-digit token for the user to manage their schedule
   def generate_token
     return if token.present?
 

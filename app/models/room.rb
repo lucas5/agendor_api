@@ -4,6 +4,7 @@ class Room < ApplicationRecord
 
   validate :capacity_verify
 
+  # Check if the office still has the capacity to have registered rooms
   def capacity_verify
     office = Office.find_by(id: office_id)
     office_capacity = Room.where(office_id: office&.id).count
