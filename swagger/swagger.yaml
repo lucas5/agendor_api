@@ -172,4 +172,4 @@ paths:
         '404':
           description: Requisição inválida
 servers:
-- url: http://localhost:3000/
+- url: https://agendor-api.herokuapp.com/
